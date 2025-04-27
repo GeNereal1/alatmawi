@@ -4,6 +4,12 @@ document.addEventListener("DOMContentLoaded", function () {
   const prevBtn = document.getElementById('prevBtn');
   const nextBtn = document.getElementById('nextBtn');
 
+  // إنشاء عداد الصور
+  const counter = document.createElement('div');
+  counter.id = "counter";
+  counter.className = "counter";
+  prevBtn.parentNode.appendChild(counter);
+
   function showSlide(index) {
     slides.forEach((slide, i) => {
       slide.classList.remove('active');
@@ -11,6 +17,11 @@ document.addEventListener("DOMContentLoaded", function () {
         slide.classList.add('active');
       }
     });
+    updateCounter();
+  }
+
+  function updateCounter() {
+    counter.textContent = `${currentSlide + 1} / ${slides.length}`;
   }
 
   nextBtn.addEventListener('click', function() {
