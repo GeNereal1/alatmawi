@@ -230,3 +230,8 @@ body {
     padding: 6px 12px;
   }
 }
+
+#prevBtn, #nextBtn {
+  display: none;
+}
+
