@@ -37,11 +37,8 @@ document.addEventListener("DOMContentLoaded", function () {
       isDragging = true;
     });
 
-    slider.addEventListener('touchmove', (e) => {
-      if (!isDragging) return;
-    });
-
     slider.addEventListener('touchend', (e) => {
+      if (!isDragging) return;
       isDragging = false;
       const endX = e.changedTouches[0].clientX;
       handleSwipe(startX, endX);
@@ -62,11 +59,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function handleSwipe(startX, endX) {
     if (startX - endX > 50) {
-      // سحب لليسار ➔ صورة تالية
       currentSlide = (currentSlide + 1) % slides.length;
       showSlide(currentSlide);
     } else if (endX - startX > 50) {
-      // سحب لليمين ➔ صورة سابقة
       currentSlide = (currentSlide - 1 + slides.length) % slides.length;
       showSlide(currentSlide);
     }
@@ -78,11 +73,52 @@ document.addEventListener("DOMContentLoaded", function () {
       currentSlide = (currentSlide + 1) % slides.length;
       showSlide(currentSlide);
     } else if (e.key === 'ArrowLeft') {
-      currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+      currentSlide = (currentSlide - 1 + slides.length);
       showSlide(currentSlide);
     }
   });
 
-  // عرض أول شريحة عند التحميل
+  // Lightbox لعرض الصورة مكبرة
+  const lightbox = document.createElement('div');
+  lightbox.className = 'lightbox';
+  document.body.appendChild(lightbox);
+
+  const img = document.createElement('img');
+  lightbox.appendChild(img);
+
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'close-btn';
+  closeBtn.innerHTML = '❌';
+  lightbox.appendChild(closeBtn);
+
+  slides.forEach(image => {
+    image.addEventListener('click', () => {
+      img.src = image.src;
+      lightbox.style.display = 'flex';
+    });
+  });
+
+  closeBtn.addEventListener('click', () => {
+    lightbox.style.display = 'none';
+  });
+
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) {
+      lightbox.style.display = 'none';
+    }
+  });
+
   showSlide(currentSlide);
 });
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/service-worker.js')
+      .then((registration) => {
+        console.log('Service Worker registered successfully:', registration);
+      })
+      .catch((error) => {
+        console.log('Service Worker registration failed:', error);
+      });
+  });
+}
